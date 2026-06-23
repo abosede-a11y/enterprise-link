@@ -24,7 +24,10 @@ const uploadDocument = asyncHandler(async (req, res) => {
     });
   }
 
-  const fileUrl = `/uploads/${req.file.filename}`;
+  const baseUrl = process.env.NODE_ENV === 'production' 
+  ? process.env.RENDER_URL 
+  : `http://localhost:${process.env.PORT || 5001}`;
+  const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
 
   // Upsert — replace if same doc type already submitted
   const existing = await pool.query(
