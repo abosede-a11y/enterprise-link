@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-app.set('trust proxy', 1);
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -18,6 +17,7 @@ const supportRoutes = require('./routes/supportRoutes');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
 // Security
