@@ -1,7 +1,11 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const api = axios.create({ baseURL: '/api' });
+const api = axios.create({ 
+  baseURL: process.env.REACT_APP_API_URL 
+    ? `${process.env.REACT_APP_API_URL}/api` 
+    : '/api' 
+});
 
 api.interceptors.response.use(
   (res) => res,
