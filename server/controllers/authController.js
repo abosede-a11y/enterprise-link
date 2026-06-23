@@ -84,6 +84,8 @@ const login = asyncHandler(async (req, res) => {
       email: user.email,
       is_verified: user.is_verified,
       onboarding_status: user.onboarding_status,
+      is_admin: user.is_admin,
+      is_super_admin: user.is_admin,
     },
   });
 });
@@ -100,7 +102,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   if (!email) return res.status(400).json({ error: 'Email is required.' });
 
   const result = await pool.query(
-    'SELECT id, business_name, email FROM users WHERE email = $1',
+      'SELECT id, business_name, email, password_hash, is_verified, onboarding_status, is_admin, is_super_admin FROM users WHERE email = $1',
     [email.toLowerCase()]
   );
 
