@@ -46,6 +46,8 @@ const register = asyncHandler(async (req, res) => {
       business_name: user.business_name,
       email: user.email,
       onboarding_status: user.onboarding_status,
+      is_admin: user.is_admin,
+      is_super_admin: user.is_super_admin,
     },
   });
 });
