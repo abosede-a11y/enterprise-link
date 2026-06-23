@@ -27,8 +27,8 @@ const register = asyncHandler(async (req, res) => {
   const password_hash = await bcrypt.hash(password, 12);
 
   const result = await pool.query(
-    `INSERT INTO users (business_name, email, password_hash, phone)
-     VALUES ($1, $2, $3, $4) RETURNING id, business_name, email, onboarding_status, created_at`,
+    `INSERT INTO users (business_name, email, password_hash, phone, is_verified, email_verified)
+    VALUES ($1, $2, $3, $4, TRUE, TRUE) RETURNING id, business_name, email, onboarding_status, created_at`,
     [business_name, email.toLowerCase(), password_hash, phone || null]
   );
 

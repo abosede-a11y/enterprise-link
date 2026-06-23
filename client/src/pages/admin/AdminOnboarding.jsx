@@ -77,8 +77,8 @@ export default function AdminOnboarding() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-                      <a href={`http://localhost:5001${doc.file_url}`} target="_blank" rel="noreferrer"
-                        className="btn btn-secondary btn-sm">👁 View File</a>
+                      <a href={doc.file_url.startsWith('http') ? doc.file_url : `https://enterprise-link-api.onrender.com${doc.file_url}`} 
+                        target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">👁 View File</a>
 
                       {doc.status === 'submitted' && (
                         <>
