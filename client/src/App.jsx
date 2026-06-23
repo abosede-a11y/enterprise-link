@@ -53,8 +53,8 @@ const AppRoutes = () => (
       <Route path="/support" element={<SupportPage />} />
     </Route>
 
-    {/* Admin routes */}
-    <Route path="/admin/login" element={<AdminLoginPage />} />
+    {/* Admin login now uses main login page */}
+    <Route path="/admin/login" element={<Navigate to="/login" replace />} />
     <Route path="/admin" element={<AdminShell />}>
       <Route path="dashboard" element={<AdminDashboard />} />
       <Route path="users" element={<AdminUsers />} />

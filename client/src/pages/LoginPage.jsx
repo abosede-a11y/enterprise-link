@@ -17,7 +17,14 @@ export default function LoginPage() {
       const res = await api.post('/auth/login', data);
       login(res.data.token, res.data.user);
       toast.success('Welcome back!');
-      navigate('/dashboard');
+      // If admin, redirect to admin dashboard
+      if (res.data.user.is_admin) {
+        localStorage.setItem('el_admin_token', res.data.token);
+        localStorage.setItem('el_admin_user', JSON.stringify(res.data.user));
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch {}
     finally { setLoading(false); }
   };
