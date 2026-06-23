@@ -100,10 +100,10 @@ export default function LandingPage() {
         <h2 style={{ fontSize: 28, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Ready to get started?</h2>
         <p style={{ fontSize: 15, color: '#6b7280', marginBottom: '2rem' }}>Join hundreds of businesses already using Enterprise Link to manage their finances.</p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => openModal('register')} style={{ fontSize: 15, padding: '12px 28px', borderRadius: 8, border: 'none', background: '#1d4ed8', color: '#fff', cursor: 'pointer', fontWeight: 600 }}>
+          <button onClick={() => { setModalOpen(false); navigate('/register'); }} style={{ fontSize: 15, padding: '12px 28px', borderRadius: 8, border: 'none', background: '#1d4ed8', color: '#fff', cursor: 'pointer', fontWeight: 600 }}>
             Create account
           </button>
-          <button onClick={() => openModal('login')} style={{ fontSize: 15, padding: '12px 28px', borderRadius: 8, border: '1px solid #e5e7eb', background: '#fff', color: '#374151', cursor: 'pointer' }}>
+          <button onClick={() => { setModalOpen(false); navigate('/login'); }} style={{ fontSize: 15, padding: '12px 28px', borderRadius: 8, border: '1px solid #e5e7eb', background: '#fff', color: '#374151', cursor: 'pointer' }}>
             Sign in
           </button>
         </div>
@@ -155,7 +155,7 @@ export default function LandingPage() {
                 <div style={{ textAlign: 'right', marginBottom: 16 }}>
                   <span onClick={() => navigate('/forgot-password')} style={{ fontSize: 12, color: '#1d4ed8', cursor: 'pointer' }}>Forgot password?</span>
                 </div>
-                <button onClick={() => navigate('/login')} style={{ width: '100%', padding: 11, background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 16 }}>
+                <button onClick={() => { setModalOpen(false); navigate('/login'); }} style={{ width: '100%', padding: 11, background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 16 }}>
                   Sign in
                 </button>
                 <div style={{ textAlign: 'center', fontSize: 13, color: '#6b7280' }}>
@@ -176,11 +176,11 @@ export default function LandingPage() {
                   <label style={{ display: 'block', fontSize: 13, color: '#374151', marginBottom: 6 }}>Password</label>
                   <input type="password" placeholder="Min. 8 characters" style={{ width: '100%', padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                 </div>
-                <button onClick={() => navigate('/register')} style={{ width: '100%', padding: 11, background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 16 }}>
+                <button onClick={() => { setModalOpen(false); navigate('/register'); }} style={{ width: '100%', padding: 11, background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 16 }}>
                   Create account
                 </button>
                 <div style={{ textAlign: 'center', fontSize: 13, color: '#6b7280' }}>
-                  Already have an account? <span onClick={() => setActiveTab('login')} style={{ color: '#1d4ed8', cursor: 'pointer' }}>Sign in</span>
+                  Already have an account? <span onClick={() => { setModalOpen(false); navigate('/login'); }} style={{ color: '#1d4ed8', cursor: 'pointer' }}>Sign in</span>
                 </div>
               </div>
             )}
