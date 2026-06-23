@@ -2,9 +2,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const api = axios.create({ 
-  baseURL: process.env.REACT_APP_API_URL 
-    ? `${process.env.REACT_APP_API_URL}/api` 
-    : '/api' 
+  baseURL: 'https://enterprise-link-api.onrender.com/api'
 });
 
 api.interceptors.response.use(
