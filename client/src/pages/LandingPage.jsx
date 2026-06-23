@@ -44,7 +44,7 @@ export default function LandingPage() {
       {/* Hero */}
       <section style={{ padding: '5rem 2rem 4rem', textAlign: 'center', maxWidth: 680, margin: '0 auto' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, padding: '4px 14px', borderRadius: 99, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', marginBottom: '1.5rem', fontWeight: 500 }}>
-          ✦ Trusted by MSMEs across Nigeria
+          ✦ Trusted by MSMEs across United Kingdom
         </div>
         <h1 style={{ fontSize: 40, fontWeight: 700, color: '#111827', lineHeight: 1.15, marginBottom: '1rem' }}>
           Financial services built for{' '}
