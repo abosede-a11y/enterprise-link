@@ -59,7 +59,7 @@ const login = asyncHandler(async (req, res) => {
   }
 
   const result = await pool.query(
-    'SELECT id, business_name, email, password_hash, is_verified, onboarding_status, is_admin FROM users WHERE email = $1',
+    'SELECT id, business_name, email, password_hash, is_verified, onboarding_status FROM users WHERE email = $1',
     [email.toLowerCase()]
   );
 
@@ -84,7 +84,6 @@ const login = asyncHandler(async (req, res) => {
       email: user.email,
       is_verified: user.is_verified,
       onboarding_status: user.onboarding_status,
-      is_admin: user.is_admin,
     },
   });
 });
@@ -157,4 +156,60 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json({ message: 'Password reset successfully. You can now log in.' });
 });
 
-module.exports = { register, login, logout, forgotPassword, resetPassword };
+// POST /api/auth/register-admin
+const registerAdmin = asyncHandler(async (req, res) => {
+  const { business_name, email, password, phone } = req.body;
+
+  if (!business_name || !email || !password) {
+    return res.status(400).json({ error: 'Business name, email, and password are required.' });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  }
+
+  const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+  if (existing.rows.length) {
+    return res.status(409).json({ error: 'An account with this email already exists.' });
+  }
+
+  const password_hash = await bcrypt.hash(password, 12);
+
+  const result = await pool.query(
+    `INSERT INTO users (business_name, email, password_hash, phone, is_pending_admin, is_verified, onboarding_status)
+     VALUES ($1, $2, $3, $4, TRUE, TRUE, 'completed')
+     RETURNING id, business_name, email`,
+    [business_name, email.toLowerCase(), password_hash, phone || null]
+  );
+
+  const user = result.rows[0];
+
+  // Notify super admin
+  const superAdmins = await pool.query(
+    'SELECT email, business_name FROM users WHERE is_super_admin = TRUE'
+  );
+
+  for (const admin of superAdmins.rows) {
+    await sendEmail({
+      to: admin.email,
+      subject: 'New Admin Registration Request',
+      html: `
+        <h2>New Admin Request</h2>
+        <p>Hi ${admin.business_name},</p>
+        <p>A new admin registration request has been submitted:</p>
+        <p><strong>Name:</strong> ${user.business_name}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p>Please log in to the admin portal to approve or reject this request.</p>
+        <a href="${process.env.CLIENT_URL}/admin/dashboard" 
+           style="background:#1d4ed8;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;margin:16px 0;">
+          Review Request
+        </a>
+      `,
+    });
+  }
+
+  res.status(201).json({
+    message: 'Admin registration submitted. A super-admin will review your request.',
+  });
+});
+
+module.exports = { register, login, logout, forgotPassword, resetPassword, registerAdmin };

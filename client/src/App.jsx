@@ -16,11 +16,12 @@ import TransactionsPage from './pages/TransactionsPage';
 import OnboardingPage from './pages/OnboardingPage';
 import SupportPage from './pages/SupportPage';
 
-import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminRegisterPage from './pages/admin/AdminRegisterPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminOnboarding from './pages/admin/AdminOnboarding';
 import AdminTransactions from './pages/admin/AdminTransactions';
+import AdminPendingRequests from './pages/admin/AdminPendingRequests';
 import { AdminTickets, AdminFaqs } from './pages/admin/AdminTicketsAndFaqs';
 
 const PrivateRoute = ({ children }) => {
@@ -43,6 +44,10 @@ const AppRoutes = () => (
     <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
     <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
 
+    {/* Admin register - public */}
+    <Route path="/admin/register" element={<AdminRegisterPage />} />
+    <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+
     {/* User routes */}
     <Route element={<PrivateRoute><AppShell /></PrivateRoute>}>
       <Route path="/dashboard" element={<DashboardPage />} />
@@ -53,8 +58,7 @@ const AppRoutes = () => (
       <Route path="/support" element={<SupportPage />} />
     </Route>
 
-    {/* Admin login now uses main login page */}
-    <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+    {/* Admin routes */}
     <Route path="/admin" element={<AdminShell />}>
       <Route path="dashboard" element={<AdminDashboard />} />
       <Route path="users" element={<AdminUsers />} />
@@ -62,6 +66,7 @@ const AppRoutes = () => (
       <Route path="transactions" element={<AdminTransactions />} />
       <Route path="tickets" element={<AdminTickets />} />
       <Route path="faqs" element={<AdminFaqs />} />
+      <Route path="pending-requests" element={<AdminPendingRequests />} />
     </Route>
 
     <Route path="/" element={<Navigate to="/dashboard" replace />} />

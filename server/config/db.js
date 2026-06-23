@@ -29,6 +29,8 @@ const initDB = async () => {
         profile_picture VARCHAR(500),
         is_verified BOOLEAN DEFAULT FALSE,
         is_admin BOOLEAN DEFAULT FALSE,
+        is_super_admin BOOLEAN DEFAULT FALSE,
+        is_pending_admin BOOLEAN DEFAULT FALSE,
         email_verified BOOLEAN DEFAULT FALSE,
         onboarding_status VARCHAR(50) DEFAULT 'pending',
         reset_password_token VARCHAR(255),
@@ -100,6 +102,8 @@ const initDB = async () => {
       CREATE INDEX IF NOT EXISTS idx_bookmarks_user_id ON bookmarks(user_id);
 
       ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS is_super_admin BOOLEAN DEFAULT FALSE;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS is_pending_admin BOOLEAN DEFAULT FALSE;
     `);
 
     // Seed sample FAQs if none exist

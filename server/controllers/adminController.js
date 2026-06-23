@@ -255,11 +255,12 @@ const deleteFaq = asyncHandler(async (req, res) => {
 
 // GET /api/admin/stats
 const getStats = asyncHandler(async (req, res) => {
-  const [users, pendingDocs, openTickets, transactions] = await Promise.all([
+  const [users, pendingDocs, openTickets, transactions, pendingAdmins] = await Promise.all([
     pool.query('SELECT COUNT(*) as total, COUNT(*) FILTER (WHERE is_verified) as verified FROM users'),
     pool.query("SELECT COUNT(*) FROM onboarding_documents WHERE status = 'submitted'"),
     pool.query("SELECT COUNT(*) FROM support_tickets WHERE status = 'open'"),
     pool.query("SELECT COUNT(*), COALESCE(SUM(amount), 0) as total_amount FROM transactions WHERE status = 'completed'"),
+    pool.query("SELECT COUNT(*) FROM users WHERE is_pending_admin = TRUE AND is_admin = FALSE"),
   ]);
 
   res.json({
@@ -267,7 +268,68 @@ const getStats = asyncHandler(async (req, res) => {
     pending_documents: parseInt(pendingDocs.rows[0].count),
     open_tickets: parseInt(openTickets.rows[0].count),
     transactions: { count: parseInt(transactions.rows[0].count), total_amount: parseFloat(transactions.rows[0].total_amount) },
+    pending_admin_requests: parseInt(pendingAdmins.rows[0].count),
   });
+});
+
+// GET /api/admin/pending-admins
+const getPendingAdmins = asyncHandler(async (req, res) => {
+  const result = await pool.query(
+    `SELECT id, business_name, email, phone, created_at
+     FROM users WHERE is_pending_admin = TRUE AND is_admin = FALSE
+     ORDER BY created_at DESC`
+  );
+  res.json({ pending_admins: result.rows });
+});
+
+// PUT /api/admin/pending-admins/:id
+const reviewAdminRequest = asyncHandler(async (req, res) => {
+  const { action } = req.body; // 'approve' | 'reject'
+
+  if (!['approve', 'reject'].includes(action)) {
+    return res.status(400).json({ error: 'Action must be approve or reject.' });
+  }
+
+  const user = await pool.query('SELECT * FROM users WHERE id = $1', [req.params.id]);
+  if (!user.rows.length) return res.status(404).json({ error: 'User not found.' });
+
+  if (action === 'approve') {
+    await pool.query(
+      `UPDATE users SET is_admin = TRUE, is_pending_admin = FALSE, updated_at = NOW() WHERE id = $1`,
+      [req.params.id]
+    );
+    await sendEmail({
+      to: user.rows[0].email,
+      subject: 'Admin Access Approved ✅',
+      html: `
+        <h2>Your Admin Request was Approved!</h2>
+        <p>Hi ${user.rows[0].business_name},</p>
+        <p>Your request for admin access to Enterprise Link has been approved.</p>
+        <p>You can now sign in and access the admin portal.</p>
+        <a href="${process.env.CLIENT_URL}/login"
+           style="background:#16a34a;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;margin:16px 0;">
+          Sign In Now
+        </a>
+      `,
+    });
+  } else {
+    await pool.query(
+      `UPDATE users SET is_pending_admin = FALSE, updated_at = NOW() WHERE id = $1`,
+      [req.params.id]
+    );
+    await sendEmail({
+      to: user.rows[0].email,
+      subject: 'Admin Access Request Update',
+      html: `
+        <h2>Admin Request Update</h2>
+        <p>Hi ${user.rows[0].business_name},</p>
+        <p>Unfortunately your request for admin access has not been approved at this time.</p>
+        <p>Please contact support if you have any questions.</p>
+      `,
+    });
+  }
+
+  res.json({ message: `Admin request ${action}d successfully.` });
 });
 
 module.exports = {
@@ -277,4 +339,5 @@ module.exports = {
   getAllTickets, updateTicketStatus,
   adminGetFaqs, createFaq, updateFaq, deleteFaq,
   getStats,
+  getPendingAdmins, reviewAdminRequest,
 };

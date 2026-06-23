@@ -5,6 +5,7 @@ import api from '../../services/api';
 const NAV = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
   { to: '/admin/users', label: 'Users', icon: '👥' },
+  { to: '/admin/pending-requests', label: 'Admin Requests', icon: '🛡️' },
   { to: '/admin/onboarding', label: 'Onboarding', icon: '📋' },
   { to: '/admin/transactions', label: 'Transactions', icon: '💳' },
   { to: '/admin/tickets', label: 'Support Tickets', icon: '🎧' },

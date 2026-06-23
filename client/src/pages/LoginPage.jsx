@@ -17,14 +17,7 @@ export default function LoginPage() {
       const res = await api.post('/auth/login', data);
       login(res.data.token, res.data.user);
       toast.success('Welcome back!');
-      // If admin, redirect to admin dashboard
-      if (res.data.user.is_admin) {
-        localStorage.setItem('el_admin_token', res.data.token);
-        localStorage.setItem('el_admin_user', JSON.stringify(res.data.user));
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      navigate('/dashboard');
     } catch {}
     finally { setLoading(false); }
   };
@@ -68,6 +61,9 @@ export default function LoginPage() {
         <hr className="divider" />
         <p className="text-center text-sm text-muted">
           Don't have an account? <Link to="/register">Create one</Link>
+        </p>
+        <p className="text-center text-sm text-muted mt-4">
+          Admin? <Link to="/admin/register">Request admin access</Link>
         </p>
       </div>
     </div>

@@ -38,6 +38,11 @@ export default function AdminDashboard() {
           <div className="stat-value">{stats?.transactions.count ?? '—'}</div>
           <div className="stat-sub">NGN {parseFloat(stats?.transactions.total_amount || 0).toLocaleString()}</div>
         </div>
+        <div className="stat-card" style={{ borderLeft: '4px solid #7c3aed', cursor: 'pointer' }} onClick={() => navigate('/admin/pending-requests')}>
+          <div className="stat-label">Pending Admin Requests</div>
+          <div className="stat-value">{stats?.pending_admin_requests ?? '—'}</div>
+          <div className="stat-sub">Awaiting approval</div>
+        </div>
       </div>
 
       {/* Quick Action Cards */}

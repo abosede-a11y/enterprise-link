@@ -12,12 +12,14 @@ const adminProtect = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const result = await pool.query(
-      'SELECT id, business_name, email, is_admin FROM users WHERE id = $1',
+      'SELECT id, business_name, email, is_admin, is_super_admin FROM users WHERE id = $1',
       [decoded.id]
     );
 
     if (!result.rows.length) return res.status(401).json({ error: 'User not found.' });
-    if (!result.rows[0].is_admin) return res.status(403).json({ error: 'Admin access required.' });
+    if (!result.rows[0].is_admin && !result.rows[0].is_super_admin) {
+      return res.status(403).json({ error: 'Admin access required.' });
+    }
 
     req.user = result.rows[0];
     next();
