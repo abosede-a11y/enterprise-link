@@ -1,27 +1,18 @@
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT) || 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    await transporter.sendMail({
-      from: `"Enterprise Link" <${process.env.EMAIL_FROM}>`,
+    await sgMail.send({
       to,
+      from: process.env.EMAIL_FROM,
       subject,
       html,
     });
     console.log(`✉️  Email sent to ${to}`);
   } catch (err) {
-    console.error('Email error:', err);
-    // Don't throw — email failure shouldn't break the request
+    console.error('Email error:', err.message);
   }
 };
 
