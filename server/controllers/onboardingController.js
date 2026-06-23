@@ -25,7 +25,7 @@ const uploadDocument = asyncHandler(async (req, res) => {
   }
 
   const baseUrl = process.env.NODE_ENV === 'production' 
-  ? process.env.RENDER_URL 
+  ? process.env.RENDER_URL
   : `http://localhost:${process.env.PORT || 5001}`;
   const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
 

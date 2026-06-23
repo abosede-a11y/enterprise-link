@@ -8,12 +8,17 @@ const {
   getAllTickets, updateTicketStatus,
   adminGetFaqs, createFaq, updateFaq, deleteFaq,
   getStats,
+  getPendingAdmins, reviewAdminRequest,
 } = require('../controllers/adminController');
 
 router.use(adminProtect);
 
 // Dashboard
 router.get('/stats', getStats);
+
+// Pending Admin Requests
+router.get('/pending-admins', getPendingAdmins);
+router.put('/pending-admins/:id', reviewAdminRequest);
 
 // Users
 router.get('/users', getUsers);
